@@ -7,15 +7,15 @@ from ascll_part import *
 
 
 # 定义按钮点击事件
-def show():
-    plaintext = plaintext_entry.get()
+def encrypt():
+    plaintext = message_entry.get()
     key = key_entry.get()
     encode = combo.get()
     if not is_binary(10, key):
-        tkinter.messagebox.showwarning('警告', '请输入10bit密钥！')
+        tkinter.messagebox.showwarning('警告', '请输入 10bit 密钥！')
         return
-    if encode == "--请选择明文编码语言--":
-        tkinter.messagebox.showinfo('提示', '请选择明文编码语言')
+    if encode == "--请选择输入编码语言--":
+        tkinter.messagebox.showinfo('提示', '请选择输入编码语言')
         return
     elif encode == "Binary":
         if not is_binary(8, plaintext):
@@ -27,9 +27,32 @@ def show():
             tkinter.messagebox.showwarning('警告', '请输入 1Byte ASCII 明文！')
             return
         ciphertext = encrypt_ascii(plaintext, key)
-    ciphertext_text.delete('1.0', tk.END)
-    ciphertext_text.insert(END, '密文：' + ciphertext + "\n")
+    output_text.delete('1.0', tk.END)
+    output_text.insert(END, '密文：' + ciphertext + "\n")
 
+def decrypt():
+    ciphertext = message_entry.get()
+    key = key_entry.get()
+    encode = combo.get()
+    if not is_binary(10, key):
+        tkinter.messagebox.showwarning('警告', '请输入 10bit 密钥！')
+        return
+    if encode == "--请选择输入编码语言--":
+        tkinter.messagebox.showinfo('提示', '请选择输入编码语言')
+        return
+    elif encode == "Binary":
+        if not is_binary(8, ciphertext):
+            tkinter.messagebox.showwarning('警告', '请输入 8bit 密文！')
+            return
+        plaintext = decryption(ciphertext, key)
+    else:
+        if not ciphertext.isascii() or len(ciphertext) != 1:
+            tkinter.messagebox.showwarning('警告', '请输入 1Byte ASCII 密文！')
+            return
+        plaintext = decrypt_ascii(ciphertext, key)
+    plaintext_str = [str(i) for i in plaintext]
+    output_text.delete('1.0', tk.END)
+    output_text.insert(END, '明文：' + ''.join(plaintext_str) + "\n")
 
 # 判断字符串是否是二进制，并且位数是否符合要求
 def is_binary(bit_number, string):
@@ -45,7 +68,7 @@ def is_binary(bit_number, string):
 
 
 root = tk.Tk()
-root.title("加密 界面")
+root.title("S-DES加密解密")
 
 style = Style(theme='sandstone')
 
@@ -68,15 +91,15 @@ title_label = tk.Label(root, text='S-DES', font=("Times", 30, "bold"))
 title_label.place(relx=.5, y=40, anchor='center')
 
 # 创建下拉框
-combo = ttk.Combobox(root, values=["--请选择明文编码语言--", "Binary", "ASCII"])
+combo = ttk.Combobox(root, values=["--请选择输入编码语言--", "Binary", "ASCII"])
 combo.current(0)
 combo.place(relx=.5, y=86, anchor='center')
 
 # 创建明文文本框及输入框
-plaintext_label = tk.Label(root, text="明文:")
-plaintext_label.place(x=130, rely=.4, anchor='center')
-plaintext_entry = tk.Entry(root)
-plaintext_entry.place(relx=.5, rely=.4, anchor='center')
+message_label = tk.Label(root, text="输入:")
+message_label.place(x=130, rely=.4, anchor='center')
+message_entry = tk.Entry(root)
+message_entry.place(relx=.5, rely=.4, anchor='center')
 
 # 创建密钥文本框及输入框
 key_label = tk.Label(root, text="密钥:")
@@ -85,12 +108,15 @@ key_entry = tk.Entry(root)
 key_entry.place(relx=.5, rely=.5, anchor='center')
 
 # 创建按钮
-confirm_button = tk.Button(root, text="确认加密", command=show)
-confirm_button.place(relx=.5, y=190, anchor='center')
+encryption_button = tk.Button(root, text="确认加密", command=encrypt)
+encryption_button.place(relx=.4, y=190, anchor='center')
+decryption_button = tk.Button(root, text="确认解密", command=decrypt)
+decryption_button.place(relx=.6, y=190, anchor='center')
+
 
 # 创建输出框控件
-ciphertext_text = tk.Text(root, height=2, width=30)
-ciphertext_text.place(relx=.5, rely=.8, anchor='center')
+output_text = tk.Text(root, height=2, width=30)
+output_text.place(relx=.5, rely=.8, anchor='center')
 
 
 root.mainloop()
