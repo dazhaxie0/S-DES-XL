@@ -4,7 +4,7 @@
 
 运行`UI.py`文件或者命令行输入`python UI.py`
 
-<img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20231002112323484.png" alt="image-20231002112323484" style="zoom:70%;" />
+
 
 
 
